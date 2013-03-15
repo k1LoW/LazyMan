@@ -8,8 +8,7 @@ env:
   - DB=mysql CAKEPHP=2.3.1
 
 before_script:
-  - curl -s https://getcomposer.org/installer | php
-  - composer.phar install
+  - composer require mtdowling/cron-expression:1.0.*
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE cakephp_test;'; fi"
   - wget https://github.com/cakephp/cakephp/tarball/$CAKEPHP -O cake.tar.gz
   - tar xf cake.tar.gz
