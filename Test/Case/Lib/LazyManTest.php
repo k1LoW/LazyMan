@@ -74,4 +74,34 @@ class LazyManTest extends CakeTestCase {
 
         unlink($testFile);
     }
+
+    /**
+     * testLazyDoCron
+     *
+     * jpn: cronフォーマットを利用したインターバル設定
+     */
+    public function testLazyDoCron(){
+        $testFile = TMP . 'tests' . DS . 'lazytest';
+        $this->LazyMan
+            ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
+            ->lazyDo();
+        $this->assertTrue(file_exists($testFile));
+
+        unlink($testFile);
+
+        $this->LazyMan
+            ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
+            ->lazyDo('* * * * *');
+        $this->assertFalse(file_exists($testFile));
+
+        touch($this->keyPath, strtotime('-2 minute'));
+
+        $this->LazyMan
+            ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
+            ->lazyDo('* * * * *');
+        $this->assertTrue(file_exists($testFile));
+
+        unlink($testFile);
+    }
+
 }

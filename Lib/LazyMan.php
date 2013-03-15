@@ -1,5 +1,8 @@
 <?php
 App::uses('File', 'Utility');
+if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
+    require_once dirname(__FILE__) . '/../vendor/autoload.php';
+}
 
 /**
  * LazyMan
@@ -47,12 +50,35 @@ class LazyMan {
             $f->write($data);
             return $this;
         }
-        if ($f->lastChange() + $interval < time()) {
+        if (is_numeric($interval)) {
+            if ($f->lastChange() + $interval < time()) {
+                $this->_do();
+                $data = $f->prepare(date('Y-m-d H:i:s'));
+                $f->write($data);
+                return $this;
+            }
+            return $this;
+        }
+        print_a($f->lastChange());
+        if ($f->lastChange() < $this->parseCronFormat($interval)) {
             $this->_do();
             $data = $f->prepare(date('Y-m-d H:i:s'));
             $f->write($data);
             return $this;
         }
+    }
+
+    /**
+     * parseCronFormat
+     *
+     * @param $interval
+     */
+    public function parseCronFormat($interval){
+        if (!class_exists('Cron\CronExpression')) {
+            throw new Exception('Not installed PHP Cron Expression Parser');
+        }
+        $cron = Cron\CronExpression::factory($interval);
+        return $cron->getPreviousRunDate('+1 second')->format('U');
     }
 
     /**
