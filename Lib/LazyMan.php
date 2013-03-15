@@ -59,7 +59,6 @@ class LazyMan {
             }
             return $this;
         }
-        print_a($f->lastChange());
         if ($f->lastChange() < $this->parseCronFormat($interval)) {
             $this->_do();
             $data = $f->prepare(date('Y-m-d H:i:s'));
