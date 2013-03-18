@@ -39,10 +39,10 @@ class LazyMan {
     }
 
     /**
-     * lazyDo
+     * doJob
      *
      */
-    public function lazyDo($interval = null){
+    public function doJob($interval = null){
         $f = new File($this->keyPath, false);
         if ($interval === null || !$f->exists()) {
             $this->_do();

@@ -27,40 +27,40 @@ class LazyManTest extends CakeTestCase {
      *
      */
     public function testCreateKeyFile(){
-        $this->LazyMan->lazyDo();
+        $this->LazyMan->doJob();
         $this->assertTrue(file_exists($this->keyPath));
     }
 
     /**
-     * testLazyDo
+     * testDoJob
      *
-     * jpn: 1回目のLazyMan::lazyDo()の実行から3s経過しないと2回目のLazyMan::lazyDo()は実行しない
+     * jpn: 1回目のLazyMan::doJob()の実行から3s経過しないと2回目のLazyMan::doJob()は実行しない
      */
-    public function testLazyDo(){
+    public function testDoJob(){
         $testFile = TMP . 'tests' . DS . 'lazytest';
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->lazyDo(3);
+            ->doJob(3);
         $this->assertTrue(file_exists($testFile));
 
         unlink($testFile);
 
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->lazyDo(3);
+            ->doJob(3);
         $this->assertFalse(file_exists($testFile));
     }
 
     /**
-     * testLazyDoWith5s
+     * testDoJobWith5s
      *
-     * jpn: LazyMan::lazyDo()の更新から3s以上経過したので2回目のLazyMan::lazyDo()を実行する
+     * jpn: LazyMan::doJob()の更新から3s以上経過したので2回目のLazyMan::doJob()を実行する
      */
-    public function testLazyDoWith3s(){
+    public function testDoJobWith3s(){
         $testFile = TMP . 'tests' . DS . 'lazytest';
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->lazyDo(3);
+            ->doJob(3);
         $this->assertTrue(file_exists($testFile));
 
         unlink($testFile);
@@ -69,36 +69,36 @@ class LazyManTest extends CakeTestCase {
 
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->lazyDo(3);
+            ->doJob(3);
         $this->assertTrue(file_exists($testFile));
 
         unlink($testFile);
     }
 
     /**
-     * testLazyDoCron
+     * testDoJobCron
      *
      * jpn: cronフォーマットを利用したインターバル設定
      */
-    public function testLazyDoCron(){
+    public function testDoJobCron(){
         $testFile = TMP . 'tests' . DS . 'lazytest';
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->lazyDo();
+            ->doJob();
         $this->assertTrue(file_exists($testFile));
 
         unlink($testFile);
 
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->lazyDo('* * * * *');
+            ->doJob('* * * * *');
         $this->assertFalse(file_exists($testFile));
 
         touch($this->keyPath, strtotime('-2 minute'));
 
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->lazyDo('* * * * *');
+            ->doJob('* * * * *');
         $this->assertTrue(file_exists($testFile));
 
         unlink($testFile);
