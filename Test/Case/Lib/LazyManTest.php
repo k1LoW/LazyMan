@@ -9,6 +9,10 @@ class LazyManTest extends CakeTestCase {
      */
     public function setUp(){
         $settings = array('keyDir' => TMP . 'tests');
+
+        // php-timecop
+        timecop_travel(strtotime('2013-04-04 08:00:00'));
+
         $this->LazyMan = new LazyMan('test', $settings);
         $this->keyPath = TMP . 'tests' . DS . 'lazyman_test';
     }
@@ -65,7 +69,7 @@ class LazyManTest extends CakeTestCase {
 
         unlink($testFile);
 
-        sleep(5);
+        timecop_travel(strtotime('2013-04-04 08:00:05'));
 
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
@@ -81,6 +85,8 @@ class LazyManTest extends CakeTestCase {
      * jpn: cronフォーマットを利用したインターバル設定
      */
     public function testDoJobCron(){
+        timecop_travel(strtotime('2013-04-04 08:00:00'));
+
         $testFile = TMP . 'tests' . DS . 'lazytest';
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
@@ -91,14 +97,14 @@ class LazyManTest extends CakeTestCase {
 
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->doJob('* * * * *');
+            ->doJob('* * 1 * *');
         $this->assertFalse(file_exists($testFile));
 
-        touch($this->keyPath, strtotime('-2 minute'));
+        timecop_travel(strtotime('2013-05-01 08:00:00'));
 
         $this->LazyMan
             ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
-            ->doJob('* * * * *');
+            ->doJob('* * 1 * *');
         $this->assertTrue(file_exists($testFile));
 
         unlink($testFile);
