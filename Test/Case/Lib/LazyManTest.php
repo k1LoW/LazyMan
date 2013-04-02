@@ -100,6 +100,13 @@ class LazyManTest extends CakeTestCase {
             ->doJob('* * 1 * *');
         $this->assertFalse(file_exists($testFile));
 
+        timecop_travel(strtotime('2013-04-30 23:59:59'));
+
+        $this->LazyMan
+            ->addJob(function() {touch(TMP . 'tests' . DS . 'lazytest');}, array())
+            ->doJob('* * 1 * *');
+        $this->assertFalse(file_exists($testFile));
+
         timecop_travel(strtotime('2013-05-01 08:00:00'));
 
         $this->LazyMan
