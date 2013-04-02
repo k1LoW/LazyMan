@@ -48,6 +48,7 @@ class LazyMan {
             $this->_do();
             $data = $f->prepare(date('Y-m-d H:i:s'));
             $f->write($data);
+            touch($this->keyPath, time()); // for use php time
             return $this;
         }
         if (is_numeric($interval)) {
@@ -55,6 +56,7 @@ class LazyMan {
                 $this->_do();
                 $data = $f->prepare(date('Y-m-d H:i:s'));
                 $f->write($data);
+                touch($this->keyPath, time()); // for use php time
                 return $this;
             }
             return $this;
@@ -63,6 +65,7 @@ class LazyMan {
             $this->_do();
             $data = $f->prepare(date('Y-m-d H:i:s'));
             $f->write($data);
+            touch($this->keyPath, time()); // for use php time
             return $this;
         }
     }
