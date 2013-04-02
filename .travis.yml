@@ -8,6 +8,9 @@ env:
   - DB=mysql CAKEPHP=2.3.1
 
 before_script:
+  - git clone https://github.com/hnw/php-timecop.git
+  - cd php-timecop
+  - phpize && ./configure && make && make install
   - composer require mtdowling/cron-expression:1.0.*
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE cakephp_test;'; fi"
   - wget https://github.com/cakephp/cakephp/tarball/$CAKEPHP -O cake.tar.gz
